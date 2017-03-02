@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.math.layerink_git.FingerPaintingActivity">
+
+
+    <com.math.layerink_git.DrawingView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/drawingView"/>
+
+    <ImageButton
+        android:layout_width="@dimen/icon"
+        android:layout_height="@dimen/icon"
+        android:layout_marginBottom="@dimen/icon_extern_margin"
+        android:layout_marginEnd="@dimen/icon_extern_margin"
+        android:layout_marginTop="@dimen/icon_intern_margin"
+        android:layout_marginStart="@dimen/icon_intern_margin"
+        android:padding="@dimen/icon_padding"
+        android:scaleType="fitXY"
+        android:background="@drawable/roundedbutton"
+        app:srcCompat="@drawable/menu"
+        android:id="@+id/btnMenu"
+        android:contentDescription="@string/menu"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true" />
+
+    <ImageButton
+        android:layout_width="@dimen/icon"
+        android:layout_height="@dimen/icon"
+        android:layout_marginBottom="@dimen/icon_extern_margin"
+        android:layout_marginRight="@dimen/icon_intern_margin"
+        android:layout_marginTop="@dimen/icon_intern_margin"
+        android:layout_marginLeft="@dimen/icon_intern_margin"
+        android:padding="@dimen/icon_padding"
+        android:scaleType="fitXY"
+        android:background="@drawable/roundedbutton"
+        app:srcCompat="@drawable/paintbrush"
+        android:id="@+id/btnBrush"
+        android:contentDescription="@string/brush"
+        android:layout_alignParentBottom="true"
+        android:layout_toStartOf="@+id/btnMenu" />
+
+    <ImageButton
+        android:layout_width="@dimen/icon"
+        android:layout_height="@dimen/icon"
+        android:layout_marginBottom="@dimen/icon_extern_margin"
+        android:layout_marginRight="@dimen/icon_intern_margin"
+        android:layout_marginLeft="@dimen/icon_intern_margin"
+        android:padding="@dimen/icon_padding"
+        android:scaleType="fitXY"
+        android:background="@drawable/roundedbutton"
+        app:srcCompat="@drawable/reset"
+        android:id="@+id/btnReset"
+        android:contentDescription="@string/reset"
+        android:layout_toStartOf="@+id/btnBrush"
+        android:layout_alignTop="@+id/btnBrush" />
+
+    <ImageButton
+        android:layout_width="@dimen/icon"
+        android:layout_height="@dimen/icon"
+        android:layout_marginBottom="@dimen/icon_intern_margin"
+        android:layout_marginEnd="@dimen/icon_extern_margin"
+        android:layout_marginTop="@dimen/icon_intern_margin"
+        android:layout_marginStart="@dimen/icon_intern_margin"
+        android:padding="@dimen/icon_padding"
+        android:scaleType="fitXY"
+        android:background="@drawable/roundedbutton"
+        app:srcCompat="@drawable/gallery"
+        android:id="@+id/btnGallery"
+        android:contentDescription="@string/gallery"
+        android:layout_above="@+id/btnMenu"
+        android:layout_alignParentEnd="true" />
+
+    <ImageButton
+        android:layout_width="@dimen/icon"
+        android:layout_height="@dimen/icon"
+        android:layout_marginBottom="@dimen/icon_intern_margin"
+        android:layout_marginEnd="@dimen/icon_extern_margin"
+        android:layout_marginTop="@dimen/icon_intern_margin"
+        android:layout_marginStart="@dimen/icon_intern_margin"
+        android:padding="@dimen/icon_padding"
+        android:scaleType="fitXY"
+        android:background="@drawable/roundedbutton"
+        app:srcCompat="@drawable/camera"
+        android:id="@+id/btnCamera"
+        android:contentDescription="@string/camera"
+        android:layout_above="@+id/btnGallery"
+        android:layout_alignParentEnd="true" />
+
+    <ImageButton
+        android:layout_width="@dimen/icon"
+        android:layout_height="@dimen/icon"
+        android:layout_marginEnd="@dimen/icon_extern_margin"
+        android:layout_marginStart="@dimen/icon_intern_margin"
+        android:padding="@dimen/icon_padding"
+        android:scaleType="fitXY"
+        android:background="@drawable/roundedbutton"
+        app:srcCompat="@drawable/save"
+        android:id="@+id/btnSave"
+        android:contentDescription="@string/save"
+        android:layout_alignTop="@+id/btnGallery"
+        android:layout_toEndOf="@+id/btnReset" />
+
+</RelativeLayout>
