@@ -115,16 +115,14 @@ public class FingerPaintingActivity extends AppCompatActivity {
 
     public void savePictureToFile() {
         OutputStream output;
-        // Find the root path
-        File filepath = Environment.getRootDirectory();
-        // Create a new folder in the root
+        // Find the SD card path
+        File filepath = Environment.getExternalStorageDirectory();
+        // Create a new folder in the SD card
         File dir = new File(filepath.getAbsolutePath(), "PicturesFolder");
         dir.mkdirs();
-        // Retrieve the image from the res folder
-
+        // Retrieve the image from the view
         com.math.layerink_git.DrawingView view = (com.math.layerink_git.DrawingView)findViewById(R.id.drawingView);
         Bitmap bitmap = view.getBitmap();
-
         // Create a name for the saved image
         File file = new File(dir, "Picture.jpg" );
         try {
@@ -147,4 +145,5 @@ public class FingerPaintingActivity extends AppCompatActivity {
         values.put(MediaStore.MediaColumns.DATA, filePath);
         context.getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
     }
+
 }

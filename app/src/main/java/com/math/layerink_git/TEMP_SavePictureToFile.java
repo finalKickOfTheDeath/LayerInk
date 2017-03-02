@@ -14,7 +14,7 @@ import java.io.OutputStream;
 
 import static com.math.layerink_git.R.layout.activity_fingerpaint;
 
-public class SavePictureToFile extends AppCompatActivity {
+public class TEMP_SavePictureToFile extends AppCompatActivity {
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -23,18 +23,16 @@ public class SavePictureToFile extends AppCompatActivity {
 
     public void savePictureToFile() {
         OutputStream output;
-        // Find the root path
-        File filepath = Environment.getRootDirectory();
-        // Create a new folder in the root
+        // Find the SD card path
+        File filepath = Environment.getExternalStorageDirectory();
+        // Create a new folder in the SD card
         File dir = new File(filepath.getAbsolutePath(), "PicturesFolder");
         dir.mkdirs();
-        // Retrieve the image from the res folder
-
+        // Retrieve the image from the view
         com.math.layerink_git.DrawingView view = (com.math.layerink_git.DrawingView)findViewById(R.id.drawingView);
         view.setDrawingCacheEnabled(true);
         view.buildDrawingCache();
         Bitmap bitmap = view.getDrawingCache();
-
         // Create a name for the saved image
         File file = new File(dir, "Picture.jpg" );
         try {
@@ -43,7 +41,7 @@ public class SavePictureToFile extends AppCompatActivity {
             bitmap.compress(Bitmap.CompressFormat.JPEG, 100, output);
             output.flush();
             output.close();
-            addImageToGallery(file.getAbsolutePath(), SavePictureToFile.this);
+            addImageToGallery(file.getAbsolutePath(), TEMP_SavePictureToFile.this);
         }
         catch (Exception e) {
             e.printStackTrace();
