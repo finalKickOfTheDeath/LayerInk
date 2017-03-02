@@ -1,3 +1,10 @@
 <resources>
-    <string name="app_name">LayerInk_Git</string>
+    <string name="app_name">Layer Ink GIT</string>
+
+    <string name="menu">Menu</string>
+    <string name="brush">Brush</string>
+    <string name="reset">Reset</string>
+    <string name="save">Save</string>
+    <string name="gallery">Gallery</string>
+    <string name="camera">Camera</string>
 </resources>
