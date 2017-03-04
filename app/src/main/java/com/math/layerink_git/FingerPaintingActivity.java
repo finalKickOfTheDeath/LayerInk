@@ -16,8 +16,12 @@ import android.view.WindowManager;
 import android.widget.ImageButton;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.OutputStream;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class FingerPaintingActivity extends AppCompatActivity {
 
@@ -109,51 +113,53 @@ public class FingerPaintingActivity extends AppCompatActivity {
                 }
         );
 
-        btnSave.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                savePictureToFile();
-            }
-        });
+        btnSave.setOnClickListener(
+                new View.OnClickListener() {
+
+                    @Override
+                    public void onClick(View v) {
+                        savePictureToFile();
+                    }
+                }
+        );
 
         Log.d("deb", "ici ok5");
 
     }// fin du onCreate
 
-    private void savePictureToFile() {
-        OutputStream output;
-        // Find the root path
-        File filepath = Environment.getRootDirectory();
-        // Create a new folder in the root
-        File dir = new File(filepath.getAbsolutePath(), "LayerInkFolder");
-        dir.mkdirs();
-        // Retrieve the image from the res folder
-
-        com.math.layerink_git.DrawingView view = (com.math.layerink_git.DrawingView)findViewById(R.id.drawingView);
-        view.setDrawingCacheEnabled(true);
+    public void savePictureToFile() {
+        com.math.layerink_git.DrawingView view = (com.math.layerink_git.DrawingView) findViewById(R.id.drawingView);
         view.buildDrawingCache();
-        Bitmap bitmap = view.getDrawingCache();
-
-        // Create a name for the saved image
-        File file = new File(dir, "Picture.jpg" );
+        Bitmap bitmap = Bitmap.createBitmap(view.getDrawingCache());
+        view.destroyDrawingCache();
+        File file, f;
+        file = new File(Environment.getExternalStorageDirectory().getAbsolutePath(), "PicturesFolder");
+        file.mkdirs();
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy_MM_dd_hh_mm_ss");
+        Date now = new Date();
+        String fileName = formatter.format(now);
+        f = new File(file.getAbsolutePath() + file.separator + "image_" + fileName + ".png");
+        FileOutputStream ostream = null;
         try {
-            output = new FileOutputStream(file);
-            // Compress into jpeg format image from 0% - 100%
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, output);
-            output.flush();
-            output.close();
-            addImageToGallery(file.getAbsolutePath(), FingerPaintingActivity.this);
-        }
-        catch (Exception e) {
+            ostream = new FileOutputStream(f);
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, ostream);
+            addImageToGallery(f.getAbsolutePath(), FingerPaintingActivity.this);
+            try {
+                ostream.close();
+            } catch (IOException e1) {
+                e1.printStackTrace();
+            }
+        } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
     }
 
-    private static void addImageToGallery(final String filePath, final Context context) {
+    public static void addImageToGallery(final String filePath, final Context context) {
         ContentValues values = new ContentValues();
         values.put(MediaStore.Images.Media.DATE_TAKEN, System.currentTimeMillis());
-        values.put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg");
+        values.put(MediaStore.Images.Media.MIME_TYPE, "image/png");
         values.put(MediaStore.MediaColumns.DATA, filePath);
         context.getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
     }
+
 }
