@@ -7,4 +7,10 @@
     <string name="save">Save</string>
     <string name="gallery">Gallery</string>
     <string name="camera">Camera</string>
+
+    <string name="titleBrushDialog">Brush options</string>
+    <string name="colorInkBrushDialog">Ink color</string>
+    <string name="sizeBrushDialog">Brush size</string>
+    <string name="doneBushDialog">Done</string>
+    <string name="cancelBrushDialog">Cancel</string>
 </resources>

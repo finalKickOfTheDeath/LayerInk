@@ -165,4 +165,9 @@ public class DrawingView extends View {
         setDrawingCacheEnabled(true);
     }
 
+    public Bitmap getBitmap() {
+        return this.bitmap;
+    }
+
+
 }
