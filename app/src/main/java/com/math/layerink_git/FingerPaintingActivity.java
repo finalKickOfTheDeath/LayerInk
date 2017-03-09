@@ -3,19 +3,27 @@ package com.math.layerink_git;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Rect;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.support.annotation.RequiresApi;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageButton;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.flask.colorpicker.ColorPickerView;
@@ -28,7 +36,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -187,9 +194,39 @@ public class FingerPaintingActivity extends AppCompatActivity {
             }
         });
 
+        btnCamera.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                takePhoto(v);
+            }
+        });
+
         Log.d("deb", "ici ok5");
 
     }// fin du onCreate
+
+    public void takePhoto(View view){
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+            Toast.makeText(getApplicationContext(), "Voyage vers l'appareil photo en cours", Toast.LENGTH_SHORT).show();
+            startActivityForResult(takePictureIntent, 1);
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == 1 && resultCode == RESULT_OK) {
+            Bundle extras = data.getExtras();
+            Bitmap imageBitmap = (Bitmap) extras.get("data");
+            //Drawable image = new BitmapDrawable(getResources(), imageBitmap);
+            //findViewById(R.id.activity_main).setBackground(image);
+            WindowManager wm = (WindowManager) getSystemService(WINDOW_SERVICE);
+            DisplayMetrics metrics = new DisplayMetrics();
+            wm.getDefaultDisplay().getMetrics(metrics);
+            Rect rect = new Rect(0,0, metrics.widthPixels, metrics.heightPixels);
+            drawingView.getCanvas().drawBitmap(imageBitmap, null, rect, null);
+        }
+    }
 
     public void savePictureToFile() {
         com.math.layerink_git.DrawingView view = (com.math.layerink_git.DrawingView) findViewById(R.id.drawingView);

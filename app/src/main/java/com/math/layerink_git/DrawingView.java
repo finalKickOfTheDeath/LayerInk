@@ -63,6 +63,10 @@ public class DrawingView extends View {
         Log.d("deb", "on est dans setpaint");
     }
 
+    public Canvas getCanvas() {
+        return canvas;
+    }
+
     /*
     protected void onMeasure (int widthMeasureSpec, int heightMeasureSpec) {
         Log.d("deb", "on est dans onMeasure");
