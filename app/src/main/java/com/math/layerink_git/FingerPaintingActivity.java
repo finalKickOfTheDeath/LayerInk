@@ -8,12 +8,8 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
-import android.os.Build;
 import android.os.Environment;
 import android.provider.MediaStore;
-import android.support.annotation.RequiresApi;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -23,7 +19,6 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageButton;
-import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.flask.colorpicker.ColorPickerView;
@@ -60,7 +55,10 @@ public class FingerPaintingActivity extends AppCompatActivity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
         setContentView(R.layout.activity_fingerpaint);
-        getSupportActionBar().hide();
+        if(getSupportActionBar() != null) {
+            getSupportActionBar().hide();
+        }
+
 
         Log.d("deb", "ici ok1");
 
@@ -208,7 +206,7 @@ public class FingerPaintingActivity extends AppCompatActivity {
     public void takePhoto(View view){
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
-            Toast.makeText(getApplicationContext(), "Voyage vers l'appareil photo en cours", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), R.string.message_takephoto, Toast.LENGTH_SHORT).show();
             startActivityForResult(takePictureIntent, 1);
         }
     }
@@ -245,6 +243,7 @@ public class FingerPaintingActivity extends AppCompatActivity {
             ostream = new FileOutputStream(f);
             bitmap.compress(Bitmap.CompressFormat.PNG, 100, ostream);
             addImageToGallery(f.getAbsolutePath(), FingerPaintingActivity.this);
+            Toast.makeText(getApplicationContext(), R.string.message_sauv, Toast.LENGTH_SHORT).show();
             try {
                 ostream.close();
             } catch (IOException e1) {

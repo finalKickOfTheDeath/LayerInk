@@ -13,4 +13,7 @@
     <string name="sizeBrushDialog">Brush size</string>
     <string name="doneBushDialog">Done</string>
     <string name="cancelBrushDialog">Cancel</string>
+
+    <string name="message_sauv">Votre image a été sauvegardée =^^=</string>
+    <string name="message_takephoto">Voyage vers l\'appareil photo en cours</string>
 </resources>
