@@ -3,6 +3,7 @@ package com.math.layerink_git;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.support.v4.content.ContextCompat;
@@ -20,7 +21,7 @@ import android.view.WindowManager;
 public class DrawingView extends View {
 
     private int width;
-    private  int height;
+    private int height;
     private Bitmap bitmap;
     private Canvas canvas;
     private Paint bitmapPaint;
@@ -53,7 +54,7 @@ public class DrawingView extends View {
         circlePaint.setStyle(Paint.Style.STROKE);
         circlePaint.setStrokeJoin(Paint.Join.MITER);
         circlePaint.setStrokeWidth(4f);
-
+        this.setDrawingCacheEnabled(true);
         Log.d("deb", "on est dans init");
     }
 
@@ -90,6 +91,7 @@ public class DrawingView extends View {
 
         bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
         canvas = new Canvas(bitmap);
+        canvas.drawColor(Color.WHITE);
     }
 
     @Override
@@ -161,6 +163,10 @@ public class DrawingView extends View {
         invalidate();
 
         setDrawingCacheEnabled(true);
+    }
+
+    public Bitmap getBitmap() {
+        return this.bitmap;
     }
 
 
