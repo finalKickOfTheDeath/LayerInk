@@ -1,4 +1,4 @@
-package com.math.layerink_git;
+package com.math.layerink_git.appli;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -26,6 +26,8 @@ import com.flask.colorpicker.OnColorChangedListener;
 import com.flask.colorpicker.OnColorSelectedListener;
 import com.flask.colorpicker.builder.ColorPickerClickListener;
 import com.flask.colorpicker.builder.ColorPickerDialogBuilder;
+import com.math.layerink_git.drawing.DrawingView;
+import com.math.layerink_git.R;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -227,7 +229,7 @@ public class FingerPaintingActivity extends AppCompatActivity {
     }
 
     public void savePictureToFile() {
-        com.math.layerink_git.DrawingView view = (com.math.layerink_git.DrawingView) findViewById(R.id.drawingView);
+        DrawingView view = (DrawingView) findViewById(R.id.drawingView);
         view.buildDrawingCache();
         Bitmap bitmap = Bitmap.createBitmap(view.getDrawingCache());
         view.destroyDrawingCache();

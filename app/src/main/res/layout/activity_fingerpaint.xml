@@ -5,10 +5,10 @@
     android:id="@+id/activity_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.math.layerink_git.FingerPaintingActivity">
+    tools:context="com.math.layerink_git.appli.FingerPaintingActivity">
 
 
-    <com.math.layerink_git.DrawingView
+    <com.math.layerink_git.drawing.DrawingView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/drawingView"/>

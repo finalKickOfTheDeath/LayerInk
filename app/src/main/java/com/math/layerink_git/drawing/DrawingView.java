@@ -1,4 +1,4 @@
-package com.math.layerink_git;
+package com.math.layerink_git.drawing;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -13,6 +13,8 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
+
+import com.math.layerink_git.R;
 
 /**
  * Created by Math on 22/02/2017.
