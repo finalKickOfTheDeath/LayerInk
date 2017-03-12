@@ -3,6 +3,10 @@ package com.math.layerink_git.database;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.util.Log;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Math on 09/03/2017.
@@ -24,7 +28,7 @@ public class UtilisationDAO extends DAOBase {
             + KEY + " INTEGER PRIMARY KEY AUTOINCREMENT, "
             + DATE + " TEXT, "
             + NBSAUV + " INTEGER, "
-            + FAVCOULEUR + " TEXT, "
+            + FAVCOULEUR + " TEXT "
             + ");";
 
     public static final String TABLE_DROP =  "DROP TABLE IF EXISTS " + TABLE_NAME + ";";
@@ -32,6 +36,7 @@ public class UtilisationDAO extends DAOBase {
 
     public UtilisationDAO(Context pContext) {
         super(pContext);
+        Log.d("data", " 2 on creer utilisation dao");
     }
 
     public void ajouter(Utilisation u) {
@@ -43,6 +48,7 @@ public class UtilisationDAO extends DAOBase {
 
         //on insere une nouvelle entrée dans la base
         mDb.insert(UtilisationDAO.TABLE_NAME, null, value);
+        Log.d("data", " 8 on insert l'utlisation dans la base");
     }
 
     public void supprimer(long id) {
@@ -59,10 +65,11 @@ public class UtilisationDAO extends DAOBase {
         mDb.update(TABLE_NAME, value, KEY  + " = ?", new String[] {String.valueOf(u.getId())});
     }
 
-    public Utilisation selectionnerDate(String d) {
-        //obtenir les infos d'une utilisation pour une date donnée
-        Cursor cursor = mDb.rawQuery("select * from " + TABLE_NAME + " where date = ?", new String[]{d});
+    public List<String> selectionDate(String d) {
+        //obtenir les infos des utilisation pour une date donnée
+        Cursor cursor = mDb.rawQuery("select id_utilisation as _id, date, nbSauvegarde, couleurFavorite from " + TABLE_NAME + " where date = ?", new String[]{d});
 
+        List<String> list = new ArrayList<String>();
         Utilisation u = null;
 
         while (cursor.moveToNext()) {
@@ -71,9 +78,10 @@ public class UtilisationDAO extends DAOBase {
             int nbSauv = cursor.getInt(2);
             String couleur = cursor.getString(3);
             u = new Utilisation(id, date, nbSauv, couleur);
+            list.add(u.toString());
         }
         cursor.close();
-        return u;
+        return list;
     }
 
 

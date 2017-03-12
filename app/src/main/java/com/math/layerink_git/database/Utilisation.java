@@ -51,5 +51,9 @@ public class Utilisation {
         this.couleurFavorite = couleurFavorite;
     }
 
+    public String toString() {
+        return "" + this.getId() + " " + this.getDate() + " " + this.getNbSauvegarde() + " " + this.getCouleurFavorite();
+    }
+
 
 }

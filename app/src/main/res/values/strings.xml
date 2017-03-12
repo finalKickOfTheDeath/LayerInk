@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Layer Ink GIT</string>
+    <string name="app_name">LayerInk</string>
 
     <string name="menu">Menu</string>
     <string name="brush">Brush</string>
@@ -16,4 +16,6 @@
 
     <string name="message_sauv">Votre image a été sauvegardée =^^=</string>
     <string name="message_takephoto">Voyage vers l\'appareil photo en cours</string>
+
+    <string name="dataseeTitle"> Vos utilisations d\'aujourd\'hui </string>
 </resources>

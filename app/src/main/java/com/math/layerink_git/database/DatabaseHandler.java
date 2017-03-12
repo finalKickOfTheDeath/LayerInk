@@ -3,6 +3,7 @@ package com.math.layerink_git.database;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 /**
  * Created by Math on 09/03/2017.
@@ -24,19 +25,20 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             + UTILISATION_KEY + " INTEGER PRIMARY KEY AUTOINCREMENT, "
             + UTILISATION_DATE + " TEXT, "
             + UTILISATION_NBSAUV + " INTEGER, "
-            + UTILISATION_FAVCOULEUR + " TEXT, "
+            + UTILISATION_FAVCOULEUR + " TEXT "
             + ");";
 
     public static final String UTILISATION_TABLE_DROP = "DROP TABLE IF EXISTS " + UTILISATION_TABLE_NAME + ";";
 
     public DatabaseHandler(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
         super(context, name, factory, version);
+        Log.d("data", "on est dans le constructeur du databasehandler");
     }
-
 
     @Override
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(UTILISATION_TABLE_CREATE);
+        Log.d("data", " 5 creation de la base");
     }
 
     @Override

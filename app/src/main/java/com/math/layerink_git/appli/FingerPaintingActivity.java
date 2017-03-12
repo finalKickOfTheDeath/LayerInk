@@ -26,6 +26,8 @@ import com.flask.colorpicker.OnColorChangedListener;
 import com.flask.colorpicker.OnColorSelectedListener;
 import com.flask.colorpicker.builder.ColorPickerClickListener;
 import com.flask.colorpicker.builder.ColorPickerDialogBuilder;
+import com.math.layerink_git.database.Utilisation;
+import com.math.layerink_git.database.UtilisationDAO;
 import com.math.layerink_git.drawing.DrawingView;
 import com.math.layerink_git.R;
 
@@ -38,12 +40,17 @@ import java.util.Date;
 
 public class FingerPaintingActivity extends AppCompatActivity {
 
+    private final static String MESSAGE_DATA = "com.math.layerink_git.appli.DATA";
+
     private ImageButton btnMenu;
     private ImageButton btnSave;
     private ImageButton btnCamera;
     private ImageButton btnGallery;
     private ImageButton btnBrush;
     private ImageButton btnReset;
+
+    private String favcolor;
+    private int nbSauv;
 
     DrawingView drawingView ;
     private Paint paint;
@@ -61,8 +68,8 @@ public class FingerPaintingActivity extends AppCompatActivity {
             getSupportActionBar().hide();
         }
 
-
-        Log.d("deb", "ici ok1");
+        favcolor = "nan";
+        nbSauv = 0;
 
         btnMenu = (ImageButton) findViewById(R.id.btnMenu);
         btnSave = (ImageButton) findViewById(R.id.btnSave);
@@ -77,8 +84,6 @@ public class FingerPaintingActivity extends AppCompatActivity {
         btnBrush.setVisibility(View.INVISIBLE);
         btnReset.setVisibility(View.INVISIBLE);
 
-        Log.d("deb", "ici ok2");
-
         paint = new Paint();
         paint.setAntiAlias(true);
         paint.setDither(true);
@@ -88,11 +93,8 @@ public class FingerPaintingActivity extends AppCompatActivity {
         paint.setStrokeCap(Paint.Cap.ROUND);
         paint.setStrokeWidth(12);
 
-
         drawingView = (DrawingView) findViewById(R.id.drawingView);
         drawingView.setPaint(paint);
-
-        Log.d("deb", "ici ok3");
 
         btnMenu.setOnClickListener(
                 new View.OnClickListener() {
@@ -118,6 +120,16 @@ public class FingerPaintingActivity extends AppCompatActivity {
                     }
                 }
         );
+
+        btnMenu.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                Intent intent = new Intent(v.getContext(), DataReader.class);
+                intent.putExtra("MESSAGE_DATA", "data en cours");
+                startActivity(intent);
+                return true;
+            }
+        });
 
         btnReset.setOnClickListener(
                 new View.OnClickListener() {
@@ -178,7 +190,8 @@ public class FingerPaintingActivity extends AppCompatActivity {
                                     }
 
                                     if (sb != null)
-                                        Toast.makeText(getApplicationContext(), sb.toString(), Toast.LENGTH_SHORT).show();
+                                        favcolor = sb.toString();
+                                        Toast.makeText(getApplicationContext(), favcolor, Toast.LENGTH_SHORT).show();
                                 }
                             }
                         })
@@ -201,9 +214,29 @@ public class FingerPaintingActivity extends AppCompatActivity {
             }
         });
 
-        Log.d("deb", "ici ok5");
-
     }// fin du onCreate
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        //on enregistre le nombre de sauvegarde et la couleur favorite (la dernière couleur utilisée)
+        SimpleDateFormat format = new SimpleDateFormat("dd MMM yyyy");
+        String date = format.format(new Date().getTime());
+        Utilisation u = new Utilisation(0, date, nbSauv, favcolor);
+        Log.d("data", "uilisation : " + u.getId() + " " + u.getDate() + " " + u.getNbSauvegarde() + " " + u.getCouleurFavorite());
+        if(!u.getCouleurFavorite().equals("nan")) {
+            //on rentre l'utilisation dans la base de donnée
+            //on recupere la base de donnée
+            UtilisationDAO utilisationDAO = new UtilisationDAO(this);
+            Log.d("data", " 1 on va récuperer la base");
+            utilisationDAO.open();
+            Log.d("data", " 4 on va ouvrir la base");
+            utilisationDAO.ajouter(u);
+            Log.d("data", " 7 on va ajouter à la base");
+            utilisationDAO.close();
+            Log.d("data", " 9 on va fermer la base");
+        }
+    }
 
     public void takePhoto(View view){
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
@@ -245,6 +278,7 @@ public class FingerPaintingActivity extends AppCompatActivity {
             ostream = new FileOutputStream(f);
             bitmap.compress(Bitmap.CompressFormat.PNG, 100, ostream);
             addImageToGallery(f.getAbsolutePath(), FingerPaintingActivity.this);
+            nbSauv++;
             Toast.makeText(getApplicationContext(), R.string.message_sauv, Toast.LENGTH_SHORT).show();
             try {
                 ostream.close();
