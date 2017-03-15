@@ -8,6 +8,7 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v4.content.ContextCompat;
@@ -19,6 +20,7 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.flask.colorpicker.ColorPickerView;
@@ -54,6 +56,9 @@ public class FingerPaintingActivity extends AppCompatActivity {
 
     DrawingView drawingView ;
     private Paint paint;
+
+    private static final int PICK_IMAGE_REQUEST = 1;
+    private ImageView imageView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)  {
@@ -214,6 +219,12 @@ public class FingerPaintingActivity extends AppCompatActivity {
             }
         });
 
+        btnGallery.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openGallery();
+            }
+        });
     }// fin du onCreate
 
     @Override
@@ -246,9 +257,36 @@ public class FingerPaintingActivity extends AppCompatActivity {
         }
     }
 
+    private void openGallery() {
+        //Intent gallery = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.INTERNAL_CONTENT_URI);
+        Intent intent = new Intent();
+        intent.setType("image/*");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        Toast.makeText(getApplicationContext(), R.string.message_openGallery, Toast.LENGTH_SHORT).show();
+        startActivityForResult(Intent.createChooser(intent,"Select Picture"), PICK_IMAGE_REQUEST);
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == 1 && resultCode == RESULT_OK) {
+
+        if (resultCode == RESULT_OK && requestCode == PICK_IMAGE_REQUEST) {
+            Log.d("frere","ok3");
+            Uri imageUri = data.getData();
+
+            try {
+                Bitmap imageBitmap = MediaStore.Images.Media.getBitmap(getContentResolver(),imageUri);
+                WindowManager wm = (WindowManager) getSystemService(WINDOW_SERVICE);
+                DisplayMetrics metrics = new DisplayMetrics();
+                wm.getDefaultDisplay().getMetrics(metrics);
+                Rect rect = new Rect(0,0, metrics.widthPixels, metrics.heightPixels);
+                drawingView.getCanvas().drawBitmap(imageBitmap, null, rect, null);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        Log.d("frere","ok1");
+       /* if (requestCode == 1 && resultCode == RESULT_OK) {
             Bundle extras = data.getExtras();
             Bitmap imageBitmap = (Bitmap) extras.get("data");
             //Drawable image = new BitmapDrawable(getResources(), imageBitmap);
@@ -258,7 +296,9 @@ public class FingerPaintingActivity extends AppCompatActivity {
             wm.getDefaultDisplay().getMetrics(metrics);
             Rect rect = new Rect(0,0, metrics.widthPixels, metrics.heightPixels);
             drawingView.getCanvas().drawBitmap(imageBitmap, null, rect, null);
-        }
+        }*/
+        Log.d("frere","ok2");
+
     }
 
     public void savePictureToFile() {
