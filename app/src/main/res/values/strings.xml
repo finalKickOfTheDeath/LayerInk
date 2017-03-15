@@ -17,5 +17,7 @@
     <string name="message_sauv">Votre image a été sauvegardée =^^=</string>
     <string name="message_takephoto">Voyage vers l\'appareil photo en cours</string>
 
+    <string name="message_openGallery">Voyage vers la gallerie en cours</string>
+
     <string name="dataseeTitle"> Vos utilisations d\'aujourd\'hui </string>
 </resources>
