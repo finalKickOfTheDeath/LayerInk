@@ -20,7 +20,6 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.flask.colorpicker.ColorPickerView;
@@ -42,7 +41,15 @@ import java.util.Date;
 
 public class FingerPaintingActivity extends AppCompatActivity {
 
-    private final static String MESSAGE_DATA = "com.math.layerink_git.appli.DATA";
+    private static final String MESSAGE_DATA = "com.math.layerink_git.appli.DATA";
+    private static final int REQUEST_IMAGE_CAPTURE = 1;
+    private static final int PICK_IMAGE_REQUEST = 2;
+
+    private String currentPhotoPath;
+    private String favColor;
+    private int nbSauv;
+    DrawingView drawingView ;
+    private Paint paint;
 
     private ImageButton btnMenu;
     private ImageButton btnSave;
@@ -51,14 +58,6 @@ public class FingerPaintingActivity extends AppCompatActivity {
     private ImageButton btnBrush;
     private ImageButton btnReset;
 
-    private String favcolor;
-    private int nbSauv;
-
-    DrawingView drawingView ;
-    private Paint paint;
-
-    private static final int PICK_IMAGE_REQUEST = 1;
-    private ImageView imageView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)  {
@@ -73,7 +72,7 @@ public class FingerPaintingActivity extends AppCompatActivity {
             getSupportActionBar().hide();
         }
 
-        favcolor = "nan";
+        favColor = "nan";
         nbSauv = 0;
 
         btnMenu = (ImageButton) findViewById(R.id.btnMenu);
@@ -195,8 +194,8 @@ public class FingerPaintingActivity extends AppCompatActivity {
                                     }
 
                                     if (sb != null)
-                                        favcolor = sb.toString();
-                                        Toast.makeText(getApplicationContext(), favcolor, Toast.LENGTH_SHORT).show();
+                                        favColor = sb.toString();
+                                        Toast.makeText(getApplicationContext(), favColor, Toast.LENGTH_SHORT).show();
                                 }
                             }
                         })
@@ -233,7 +232,7 @@ public class FingerPaintingActivity extends AppCompatActivity {
         //on enregistre le nombre de sauvegarde et la couleur favorite (la dernière couleur utilisée)
         SimpleDateFormat format = new SimpleDateFormat("dd MMM yyyy");
         String date = format.format(new Date().getTime());
-        Utilisation u = new Utilisation(0, date, nbSauv, favcolor);
+        Utilisation u = new Utilisation(0, date, nbSauv, favColor);
         Log.d("data", "uilisation : " + u.getId() + " " + u.getDate() + " " + u.getNbSauvegarde() + " " + u.getCouleurFavorite());
         if(!u.getCouleurFavorite().equals("nan")) {
             //on rentre l'utilisation dans la base de donnée
@@ -249,59 +248,87 @@ public class FingerPaintingActivity extends AppCompatActivity {
         }
     }
 
-    public void takePhoto(View view){
+    private void openGallery() {
+        Intent galleryIntent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.INTERNAL_CONTENT_URI);
+        //Intent intent = new Intent();
+        //intent.setType("image/*");
+        //intent.setAction(Intent.ACTION_GET_CONTENT);
+        Toast.makeText(getApplicationContext(), R.string.message_openGallery, Toast.LENGTH_SHORT).show();
+        startActivityForResult(Intent.createChooser(galleryIntent,"Select Picture"), PICK_IMAGE_REQUEST);
+    }
+
+    private void takePhoto(View view){
+        /*
+        //ne permet que de récupérer le thumnail
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
-            Toast.makeText(getApplicationContext(), R.string.message_takephoto, Toast.LENGTH_SHORT).show();
-            startActivityForResult(takePictureIntent, 1);
+            startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+        }
+        */
+        Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        if (cameraIntent.resolveActivity(getPackageManager()) != null) {
+            // Create the File where the photo should go
+            File photoFile = null;
+            try {
+                photoFile = createImageFile();
+            } catch (IOException ex) {
+                // Error occurred while creating the File
+                Log.i("deb", "IOException");
+            }
+            // Continue only if the File was successfully created
+            if (photoFile != null) {
+                cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(photoFile));
+                Toast.makeText(getApplicationContext(), R.string.message_takephoto, Toast.LENGTH_SHORT).show();
+                startActivityForResult(cameraIntent, REQUEST_IMAGE_CAPTURE);
+            }
         }
     }
 
-    private void openGallery() {
-        //Intent gallery = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.INTERNAL_CONTENT_URI);
-        Intent intent = new Intent();
-        intent.setType("image/*");
-        intent.setAction(Intent.ACTION_GET_CONTENT);
-        Toast.makeText(getApplicationContext(), R.string.message_openGallery, Toast.LENGTH_SHORT).show();
-        startActivityForResult(Intent.createChooser(intent,"Select Picture"), PICK_IMAGE_REQUEST);
+    private File createImageFile() throws IOException {
+        // Create an image file name
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String imageFileName = "JPEG_" + timeStamp + "_";
+        File storageDir = Environment.getExternalStoragePublicDirectory(
+                Environment.DIRECTORY_PICTURES);
+        File image = File.createTempFile(
+                imageFileName,  // prefix
+                ".jpg",         // suffix
+                storageDir      // directory
+        );
+
+        // Save a file: path for use with ACTION_VIEW intents
+        currentPhotoPath = "file:" + image.getAbsolutePath();
+        return image;
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-
-        if (resultCode == RESULT_OK && requestCode == PICK_IMAGE_REQUEST) {
-            Log.d("frere","ok3");
-            Uri imageUri = data.getData();
-
-            try {
-                Bitmap imageBitmap = MediaStore.Images.Media.getBitmap(getContentResolver(),imageUri);
-                WindowManager wm = (WindowManager) getSystemService(WINDOW_SERVICE);
-                DisplayMetrics metrics = new DisplayMetrics();
-                wm.getDefaultDisplay().getMetrics(metrics);
-                Rect rect = new Rect(0,0, metrics.widthPixels, metrics.heightPixels);
-                drawingView.getCanvas().drawBitmap(imageBitmap, null, rect, null);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-
-        Log.d("frere","ok1");
-       /* if (requestCode == 1 && resultCode == RESULT_OK) {
-            Bundle extras = data.getExtras();
-            Bitmap imageBitmap = (Bitmap) extras.get("data");
-            //Drawable image = new BitmapDrawable(getResources(), imageBitmap);
-            //findViewById(R.id.activity_main).setBackground(image);
+        if(resultCode == RESULT_OK) { //RESULT_OK = -1
+            Bitmap imageBitmap = null;
+           if(requestCode == REQUEST_IMAGE_CAPTURE) {
+               try {
+                   imageBitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), Uri.parse(currentPhotoPath));
+               } catch (IOException ioe) {
+                   Log.e("resultIntent", "impossible de charger l'image de l'appareil photo");
+               }
+           }
+            else if(resultCode == RESULT_OK && requestCode == PICK_IMAGE_REQUEST) {
+               Uri imageUri = data.getData();
+               try {
+                   imageBitmap = MediaStore.Images.Media.getBitmap(getContentResolver(),imageUri);
+               } catch (IOException ioe) {
+                   Log.e("resultIntent", "impossible de charger l'image depuis la galerie");
+               }
+           }
             WindowManager wm = (WindowManager) getSystemService(WINDOW_SERVICE);
             DisplayMetrics metrics = new DisplayMetrics();
             wm.getDefaultDisplay().getMetrics(metrics);
             Rect rect = new Rect(0,0, metrics.widthPixels, metrics.heightPixels);
             drawingView.getCanvas().drawBitmap(imageBitmap, null, rect, null);
-        }*/
-        Log.d("frere","ok2");
-
+        }
     }
 
-    public void savePictureToFile() {
+    private void savePictureToFile() {
         DrawingView view = (DrawingView) findViewById(R.id.drawingView);
         view.buildDrawingCache();
         Bitmap bitmap = Bitmap.createBitmap(view.getDrawingCache());
@@ -330,7 +357,7 @@ public class FingerPaintingActivity extends AppCompatActivity {
         }
     }
 
-    public static void addImageToGallery(final String filePath, final Context context) {
+    private static void addImageToGallery(final String filePath, final Context context) {
         ContentValues values = new ContentValues();
         values.put(MediaStore.Images.Media.DATE_TAKEN, System.currentTimeMillis());
         values.put(MediaStore.Images.Media.MIME_TYPE, "image/png");
